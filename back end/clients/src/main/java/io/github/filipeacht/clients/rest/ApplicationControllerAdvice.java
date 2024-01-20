@@ -1,7 +1,6 @@
 package io.github.filipeacht.clients.rest;
 
 
-
 import io.github.filipeacht.clients.rest.exception.ApiErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +20,19 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationErrors(MethodArgumentNotValidException ex){
+    public ApiErrors handleValidationErrors(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         List<String> messages = bindingResult.getAllErrors()
                 .stream()
-                .map( objectError -> objectError.getDefaultMessage() )
-                .collect( Collectors.toList() );
+                .map(objectError -> objectError.getDefaultMessage())
+                .collect(Collectors.toList());
 
         return new ApiErrors(messages);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity handleResponseStatusException(ResponseStatusException ex){
-        String messageError = ex.getMessage();
+    public ResponseEntity handleResponseStatusException(ResponseStatusException ex) {
+        String messageError = ex.getReason();
         HttpStatus statusCode = ex.getStatus();
         ApiErrors apiErrors = new ApiErrors(messageError);
         return new ResponseEntity(apiErrors, statusCode);
